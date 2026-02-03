@@ -1,0 +1,76 @@
+-- CREATING DATABASE AND TABLES
+CREATE DATABASE client_info;
+
+USE  client_info;
+
+CREATE TABLE IF NOT EXISTS clients (
+	client_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(75),
+    password VARCHAR(20)
+);
+
+CREATE TABLE IF NOT EXISTS meetings (
+    meeting_id INT AUTO_INCREMENT PRIMARY KEY,
+    topic VARCHAR(100) NOT NULL,
+    attendees_number INT,
+    date DATETIME,
+    client_id INT,
+    FOREIGN KEY(client_id) REFERENCES clients(client_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- INSERTING DATA INTO TABLES
+INSERT INTO clients (name, email, password)
+VALUES 
+    ("Harry Potter", "thechosenone@hogwarts.com", "quidditchiscool123"),
+    ("Hermione Granger", "knowitall@hogwarts.com", "crookshanks1234"),
+    ("Lord Voldemort", "imbad@hogwarts.com", "secretlytomriddle"),
+    ("Ron Weasley", "thatredhead@hogwarts.com", "scarychristmassweater13");
+    -- Will fail because password too long on Ron; testing validation
+
+ -- Succesfully insert with a shorter password
+INSERT INTO clients (name, email, password)
+VALUES 
+    ("Harry Potter", "thechosenone@hogwarts.com", "quidditchiscool123"),
+    ("Hermione Granger", "knowitall@hogwarts.com", "crookshanks1234"),
+    ("Lord Voldemort", "imbad@hogwarts.com", "secretlytomriddle"),
+    ("Ron Weasley", "thatredhead@hogwarts.com", "christmassweater");
+
+INSERT INTO meetings (topic, attendees_number, date, client_id)
+VALUES 
+	("project update", 2, "2026-01-25 12:15:00",8),
+	("Project Update 2", 4, "2026-02-19 14:00:00",8),
+	("Discovery Meeting", 1, "2026-01-27 08:30:00",5),
+	("Client Consultation", 2, "2026-02-05 10:00:00",6),
+	("Project Closure", 8, "2026-01-05 12:00:00",7)
+
+
+-- UPDATING EXISTING DATA
+UPDATE meetings
+SET 
+    topic = "Troubleshoot New Issue",
+    attendees_number= 12
+WHERE meeting_id = 10;
+
+UPDATE meetings
+SET
+    topic = "Start Project 2",
+    client_id = 8
+WHERE meeting_id = 8
+
+-- DELETING DATA
+DELETE FROM meetings
+WHERE meeting_id = 7
+
+-- JOIN QUERIES
+SELECT clients.name, clients.email
+FROM clients
+INNER JOIN meetings ON clients.client_id=meetings.client_id
+
+SELECT clients.name, meetings.date
+FROM clients
+INNER JOIN meetings ON clients.client_id = meetings.client_id
+WHERE meetings.date BETWEEN '2026-01-01' AND '2026-01-31'
